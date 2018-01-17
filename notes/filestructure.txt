@@ -1,0 +1,18 @@
+
+server                                  
+├── api.go                          # attach a endpoint of /v1/conf
+├── app.go                          # app, web server entry file.
+├── bindata.go                      # generated code using go-bindata
+├── conf.go                         # confs
+├── data                            # bundled resoures using webpack
+│   ├── static
+│   │   ├── build
+│   │   │   ├── bundle.css
+│   │   │   └── bundle.js
+│   │   └── images
+│   │       └── favicon.ico
+│   └── templates
+│       └── react.html
+├── main.go                         # inorder to generate cli command line executable
+├── react.go                        # a go lang implemented js runtime. 
+└── utils.go                        # utils functions

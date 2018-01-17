@@ -1,0 +1,66 @@
+
+
+
+
+BLOG ----
+http://godaddy.idcspy.com/domain-regist
+
+
+* [install nginx on centos]
+  * [install docker, nginx, vim on centos] (https://www.jianshu.com/p/6faf776b520d)
+  * (https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7)
+  * https://www.tecmint.com/install-nginx-on-centos-7/
+  * https://gist.github.com/ifels/c8cfdfe249e27ffa9ba1
+  
+  ```
+  sudo cat /etc/*release*
+
+  export LC_ALL="en_US.UTF-8"
+  echo 'LC_ALL="en_US.UTF-8"' > /etc/locale.conf
+  echo 'LC_ALL="en_US.UTF-8"' > /etc/default/locale
+  yum update -y && yum install -y vim wget nginx 
+
+
+  ```
+
+  enable ssl
+
+
+* install docker & docker compose:
+  * https://docs.docker.com/engine/installation/linux/docker-ce/centos/#upgrade-docker-ce
+  * 
+
+
+    ```shell
+    sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    ```
+
+* [How to Enable EPEL Repository for RHEL/CentOS 7.x/6.x/5.x](https://www.tecmint.com/how-to-enable-epel-repository-for-rhel-centos-6-5/)
+* [BBR 是什么](https://kn007.net/topics/centos-6-safety-quickly-enable-tcp-congestion-control-algorithm-bbr/)
+
+
+
+security:
+  https://serversforhackers.com/c/creating-users-and-ssh-security
+    disable root login, can login by other user, then promot to root
+
+
+
+https://serversforhackers.com/c/logging-into-your-server
+https://serversforhackers.com/c/configuring-ssh-locally
+
+htop:
+    https://serversforhackers.com/c/getting-around-your-server
+
+todos:
+    done:
+
+    pending:
+        why this has to be put inside /Users/interaction/workspace/golang/src/github.com directory in order for make serve's install to work
+        sed command, and any usage in makefile
+        change this fold's name
+        how this rule `$(TARGET)` generated.
+        how/can write a middleware that do post response handling ?
+        glance echo doc
+        xargs vs pipe

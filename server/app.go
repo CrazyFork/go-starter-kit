@@ -29,7 +29,7 @@ type App struct {
 func NewApp(opts ...AppOptions) *App {
 	options := AppOptions{}
 	for _, i := range opts {
-		options = i
+		options = i //:todo, extend or override ?
 		break
 	}
 
@@ -44,8 +44,7 @@ func NewApp(opts ...AppOptions) *App {
 	conf.Set("debug", debug)
 	conf.Set("commitHash", commitHash)
 
-	// Parse environ variables for defined
-	// in config constants
+	// Parse environ variables from system environment
 	conf.Env()
 
 	// Make an engine
@@ -55,7 +54,7 @@ func NewApp(opts ...AppOptions) *App {
 	engine.Renderer = NewTemplate()
 
 	// Set up echo debug level
-	engine.Debug = conf.UBool("debug")
+	engine.Debug = conf.UBool("debug") // get debug config value returns boolean
 
 	// Regular middlewares
 	engine.Use(middleware.Recover())
@@ -64,6 +63,7 @@ func NewApp(opts ...AppOptions) *App {
 		return c.Redirect(http.StatusMovedPermanently, "/static/images/favicon.ico")
 	})
 
+	// config logger
 	engine.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `${method} | ${status} | ${uri} -> ${latency_human}` + "\n",
 	}))
@@ -81,6 +81,7 @@ func NewApp(opts ...AppOptions) *App {
 	}
 
 	// Map app and uuid for every requests
+	// a middleware that do come pre-process work on request
 	app.Engine.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			c.Set("app", app)
@@ -91,6 +92,7 @@ func NewApp(opts ...AppOptions) *App {
 	})
 
 	// Bind api hadling for URL api.prefix
+	// :todo,
 	app.API.Bind(
 		app.Engine.Group(
 			app.Conf.UString("api.prefix"),
@@ -123,6 +125,7 @@ func NewApp(opts ...AppOptions) *App {
 						return nil
 					}
 					// if static file not found handle request via react application
+					// :bm, js can handle url request
 					return app.React.Handle(c)
 				}
 			}
@@ -147,6 +150,7 @@ type Template struct {
 // NewTemplate creates a new template
 func NewTemplate() *Template {
 	return &Template{
+		//:todo, return a template, but what if there's multiple templates under this folder
 		templates: binhtml.New(Asset, AssetDir).MustLoadDirectory("templates"),
 	}
 }

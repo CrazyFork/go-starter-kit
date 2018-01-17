@@ -1,0 +1,9 @@
+
+
+* generate random data:
+
+    
+    if err := binary.Read(crand.Reader, binary.LittleEndian, &seed); err != nil {
+        panic(fmt.Errorf("Could not read random bytes: %v", err))
+    }
+

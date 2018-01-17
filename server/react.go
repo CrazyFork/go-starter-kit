@@ -35,6 +35,7 @@ func NewReact(filePath string, debug bool, proxy http.Handler) *React {
 		path:  filePath,
 	}
 	if !debug {
+		// generate same amount of engine pool as cpu size
 		r.pool = newEnginePool(filePath, runtime.NumCPU(), proxy)
 	} else {
 		// Use onDemandPool to load full react
@@ -89,7 +90,7 @@ func (r *React) Handle(c echo.Context) error {
 			c.Response().Header().Set("X-React-Render-Time", re.RenderTime.String())
 			return c.Render(http.StatusInternalServerError, "react.html", re)
 		}
-	case <-time.After(2 * time.Second):
+	case <-time.After(2 * time.Second): // timeout after 2 secs
 		// release the context
 		r.drop(vm)
 		return c.Render(http.StatusInternalServerError, "react.html", Resp{
@@ -161,18 +162,21 @@ type enginePool struct {
 	proxy http.Handler
 }
 
+// get a js vm from pool
 func (o *enginePool) get() *JSVM {
 	return <-o.ch
 }
 
+// put a js vm into pool
 func (o *enginePool) put(ot *JSVM) {
 	o.ch <- ot
 }
 
+// stop target js vm & create a newone then put it into pool
 func (o *enginePool) drop(ot *JSVM) {
 	ot.Stop()
 	ot = nil
-	o.ch <- newJSVM(o.path, o.proxy)
+	o.ch <- newJSVM(o.path, o.proxy) // :todo, why drop then create a new one here
 }
 
 // newJSVM loads bundle.js into context.
@@ -213,7 +217,7 @@ func newJSVM(filePath string, proxy http.Handler) *JSVM {
 					field.Set(obj[n])
 				}
 			}
-			vm.ch <- *re
+			vm.ch <- *re // send __goServerCallback__ value to vm.ch
 			return nil
 		})
 	})
@@ -225,10 +229,11 @@ func newJSVM(filePath string, proxy http.Handler) *JSVM {
 type JSVM struct {
 	*eventloop.EventLoop
 	ch chan Resp
-	fn goja.Callable
+	fn goja.Callable // a js function can be called by go
 }
 
 // Handle handles http requests
+// call js function with a req param & a __goServerCallback__ param
 func (r *JSVM) Handle(req map[string]interface{}) <-chan Resp {
 	r.EventLoop.RunOnLoop(func(vm *goja.Runtime) {
 		r.fn(nil, vm.ToValue(req), vm.ToValue("__goServerCallback__"))
