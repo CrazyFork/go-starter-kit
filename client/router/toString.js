@@ -12,6 +12,7 @@ import { createStore, setAsCurrentStore } from '../store';
  * @param   {Object}   options  request options
  * @param   {Function} cbk      response callback
  */
+// server side rendering, used by golang.
 export default function (options, cbk) {
   cbk = global[cbk];
   let result = {
@@ -45,6 +46,7 @@ export default function (options, cbk) {
           const { title, meta } = Helmet.rewind();
           result.title = title.toString();
           result.meta = meta.toString();
+          // 将 reducer 处理后的 store 返回
           result.initial = JSON.stringify(store.getState());
         }
       } catch (e) {

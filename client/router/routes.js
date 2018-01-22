@@ -12,9 +12,11 @@ import NotFound from '#app/components/not-found';
  * @param {Object} - any data for static loaders and first-time-loading marker
  * @returns {Object} - configured routes
  */
+// used by both server & client, centralized defination
 export default ({store, first}) => {
 
   // Make a closure to skip first request
+  // 第一次 server render 的ajax请求不处理
   function w(loader) {
     return (nextState, replaceState, callback) => {
       if (first.time) {

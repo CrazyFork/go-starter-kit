@@ -34,6 +34,7 @@ export const renderToString = toString;
 require('../css');
 
 // Style live reloading
+// :bm, well, this is awkward way to do this.
 if (module.hot) {
   let c = 0;
   module.hot.accept('../css', () => {

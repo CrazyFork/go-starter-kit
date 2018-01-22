@@ -1,13 +1,44 @@
 
 # Features
 
-    * 这个工程实现了 reactjs 在golang中的服务端渲染, 核心的逻辑就是引入了golang实现的js runtime, 在runtime的帮助下   js可以与golang进行交互,相互调用, 所以 src/react.go 的实现逻辑需要注意下
+* 这个工程实现了 reactjs 在golang中的服务端渲染, 核心的逻辑就是引入了golang实现的js runtime, 在runtime的帮助下   js可以与golang进行交互,相互调用, 所以 src/react.go 的实现逻辑需要注意下
+    * server 端渲染会调用 client js 中的 main 函数作为入口函数, 所以注意下 main 函数的定义
+    * server 端会把 server render 的 data 注入到 window['--app-initial'] 这个变量, 通过 react.html template.
+    * 前段组件的 onEnter 函数定义是作为组件数据请求用的, 所有的ajax 请求应该走这里, 然后dispatch 到 redux 的 store
+        中。但是如果是server side render，数据会从html模板中注入, 所以 SSR 中的第一次 http 请求会被skip掉。 `client/router/routes` 有详细定义
+        onEnter 会被 react-router 调用, v3 的版本, 不知道v4改怎么处理了。
+    * `client/router/toString` 这个文件的函数会被 server 端调用, 用来 Server side rendering string, 然后将处理完的结果(golang/ja runtime)通过callback
+        传递到golang那层.
 
-    * 这个工程的前段技术栈
-        * js
-            * react , redux , react-router
-        * css
-            * precss, 
+
+    
+
+* 这个工程的前段技术栈
+    * js
+        * react , redux , react-router
+    * css
+        * precss, postcss
+    * 这个工程的前段项目通过webpack + express 的配置方式实现了前端的HMR, 和后端接口请求的proxy.
+        css开启了css module, 用这种方式引入的样式.
+        
+        
+
+    
+
+* makefile 的写法可以好好学习下
+* hot.proxy.js 用了 express 的 proxy middlewar, 将所有非静态资源的请求 proxy 到 golang 启动的server中
+
+    
+问题:
+* 前段的 webpack 版本比较低
+* golang 实现的js runtime 我怎么感觉用来执行 server-rendering 都有些担心
+    * 只支持 es5 规范, 感觉过几年就应该不用了
+    * 这个自定义的引擎的另外的一个问题就是怕好多标准的方法不支持
+
+* 当前项目使用 go-bindata 将所有静态资源打包到最终的binary当中, 我总觉得不是很好的方式, 而且资源的 versioning 该怎么弄这又是一个核心的问题
+
+
+
 
 
 

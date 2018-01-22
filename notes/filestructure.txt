@@ -16,3 +16,28 @@ server
 ├── main.go                         # inorder to generate cli command line executable
 ├── react.go                        # a go lang implemented js runtime. 
 └── utils.go                        # utils functions
+
+
+
+
+
+client
+├── actions.js                       # redux actions,
+├── components                       # some react components
+│   ├── app
+│   ├── dev-tools
+│   ├── homepage
+│   ├── not-found
+│   └── usage
+├── css                              # defined some css utils & global style
+│   ├── funcs.js                     # function defination of `postcss-functions` package
+│   ├── global.css                   # global styles
+│   ├── index.js                     # entry file, pls do notices here how the component styles are loaded
+│   └── vars.js                      # css variables, global variables
+├── index.js
+├── reducers.js                      # redux reducers
+├── router                           # ! most important folds & files, 
+│   ├── index.js                     # some logics, whatever it is.
+│   ├── routes.js                    # routes defination used by both server & client side
+│   └── toString.js                  # used by server side rendering
+└── store.js                         # redux store, defined functions to create store
